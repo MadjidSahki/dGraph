@@ -1,0 +1,1 @@
+Tools\protoc\windows_x86\protoc.exe -I ./Protos --csharp_out DgraphNet.Client/Generated --grpc_out=internal_access:DgraphNet.Client/Generated ./Protos/api.proto --plugin=protoc-gen-grpc=Tools/protoc/windows_x86/grpc_csharp_plugin.exe

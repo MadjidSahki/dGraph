@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <!-- Standard properties. -->
+    <RepositoryType>git</RepositoryType>
+    <Copyright>Copyright Alexandre Da Silva $([System.DateTime]::UtcNow.ToString("yyyy"))</Copyright>
+    <Authors>Alexandre Da Silva</Authors>
+
+    <!-- Properties that are solution depdendents. -->
+    <ProductName>DgraphNet</ProductName>
+    <PackageReleaseNotes>https://github.com/AlexandreDaSilva/DgraphNet/releases</PackageReleaseNotes>
+    <PackageLicenseUrl>https://github.com/AlexandreDaSilva/DgraphNet/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/AlexandreDaSilva/DgraphNet</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/AlexandreDaSilva/DgraphNet</RepositoryUrl>
+  </PropertyGroup>
+</Project>

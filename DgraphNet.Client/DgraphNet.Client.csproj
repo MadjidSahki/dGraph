@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\Common\Shared.props" />
+	
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <Description>A minimal implementation for a Dgraph client for .NET, using grpc. It exposes both synchronous and asynchronous API.
+
+The library targets both .NET Standard 2.0 and .NET 4.6.1.
+
+This client follows the Dgraph Go client closely.
+
+Before using this client, we highly recommend that you go through docs.dgraph.io, and understand how to run and work with Dgraph.</Description>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="CK.Text" Version="6.0.2" />
+    <PackageReference Include="Google.Protobuf" Version="3.5.1" />
+    <PackageReference Include="Grpc" Version="1.10.0" />
+    <PackageReference Include="Grpc.Tools" Version="1.10.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Generated\" />
+  </ItemGroup>
+  
+    <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+</Project>
