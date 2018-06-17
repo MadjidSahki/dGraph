@@ -12,13 +12,13 @@ using static DgraphNet.Client.DgraphNetClient;
 
 namespace DgraphNet.Client.Sample
 {
- 
+
 
     class Program
     {
         static void Main(string[] args)
         {
-            
+
             var connection = new DgraphConnection("localhost", 9080, ChannelCredentials.Insecure);
 
             var pool = new DgraphConnectionPool().Add(connection);
@@ -26,12 +26,12 @@ namespace DgraphNet.Client.Sample
             var client = new DgraphNetClient(pool);
 
             client.Alter(new Operation { DropAll = true });
-            
+
             //Index le schéma 
             string schema = "domain_name_index: string @index(hash) .";
             Operation op = new Operation { Schema = schema };
             client.Alter(op);
-            
+
 
 
             using (Transaction txn = client.NewTransaction())
@@ -44,37 +44,64 @@ namespace DgraphNet.Client.Sample
 
                 foreach (JProperty property in o1.Properties())
                 {
-                    dic_proprety.Add(property.Name, property.Value);
+                    if (property.Value.HasValues)
+                    {
+                        dic_proprety.Add(property.Name, property.Value);
+                    }
                 }
 
-
-                JArray array = new JArray();
-                JObject k = new JObject();
-                int b = 0;
                 foreach (var item in dic_proprety)
                 {
-                    b++;
-                    JObject obj = new JObject(
-                       new JObject(
-                           new JProperty("name_value"+b, item.Value)
-                           )
-                   );
-
-                    if (item.Value.HasValues)
+                    if (item.Value.GetType() == typeof(JArray))
                     {
-
-                        k.Add(b.ToString(), obj);
+                        if (!item.Value.HasValues)
+                        {
+                            dic_proprety.Remove(item.Key);
+                        }
+                        var lolae = item.Value;
+                        JArray qs = (JArray)lolae;
+                        for (int i = 0; i < qs.Count; i++)
+                        {
+                            if (qs[i].GetType() == typeof(JArray))
+                            {
+                                qs.RemoveAt(i);
+                            }
+                        }
                     }
-
-
                 }
 
+                JObject k = new JObject();
+                int b = 0;
+
+
+                foreach (var item in dic_proprety)
+                {
+                    if (item.Value.HasValues)
+                    {
+                        JArray array = new JArray();
+                        b++;
+                        JObject obj = new JObject(
+                           new JObject(
+                               new JProperty("name_value_list" + b, item.Value)
+                               )
+                       );
+                        array.Add(obj);
+                        JObject objSort = new JObject();
+                        objSort["list" + b] = array;
+                        JObject u = new JObject();
+                        u.Add("obj" + b, objSort);
+                        k.Merge(u, new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Union });
+                    }
+
+                }
                 k.Add("domain_name_index", "Millenium");
-                
-                
+
+
                 //Parse et seria le json cible
                 var json2 = JsonConvert.SerializeObject(k);
-
+                string json3 = json2.Replace("true", "0");
+                string json4 = json3.Replace("false", "1");
+                Console.WriteLine(k);
 
 
                 // Run mutation
@@ -82,12 +109,11 @@ namespace DgraphNet.Client.Sample
                 //JObject o7 = JObject.Parse(File.ReadAllText(@"c:\Millenium_sorted.json"));
                 //var json77 = JsonConvert.SerializeObject(o7);
 
-               // File.WriteAllText(@"C:\Users\user\Music\issou.json", json2);
-                JObject o7 = JObject.Parse(File.ReadAllText(@"C:\Users\user\Music\issou.json"));
-                var json77 = JsonConvert.SerializeObject(o7);
-                Mutation mu = new Mutation { SetJson = ByteString.CopyFromUtf8(json77) };
-                    txn.Mutate(mu);
-                    txn.Commit();
+
+
+                Mutation mu = new Mutation { SetJson = ByteString.CopyFromUtf8(json4) };
+                txn.Mutate(mu);
+                txn.Commit();
 
 
                 Console.ReadLine();
